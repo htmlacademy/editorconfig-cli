@@ -1,0 +1,27 @@
+{
+  "name": "editorconfig-cli",
+  "version": "1.0.0",
+  "description": "Command line interface for .editorconfig",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zeckson/editorconfig-cli.git"
+  },
+  "keywords": [
+    "editorconfig",
+    "cli"
+  ],
+  "author": "zeckson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zeckson/editorconfig-cli/issues"
+  },
+  "homepage": "https://github.com/zeckson/editorconfig-cli#readme",
+  "dependencies": {
+    "editorconfig": "0.13.2",
+    "lintspaces": "0.5.0"
+  }
+}
