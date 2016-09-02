@@ -1,23 +1,17 @@
-const editorconfig = require('editorconfig');
+const Validator = require('lintspaces');
 const path = require('path');
-const filePath = path.join(__dirname, '/index.js');
 
-console.info(`Filepath: ${filePath}`);
+const validatorOptions = {editorconfig: path.join(__dirname, '.editorconfig')};
+const validator = new Validator(validatorOptions);
 
-   var Validator = require('lintspaces');
+const glob = require('glob');
 
-
-editorconfig.parse(filePath).then(function (result) {
-               console.log(result);
-    var validatorOptions = {
-        endOfLine: result['end_of_line'],
-        trailingspaces: result['trim_trailing_whitespace'],
-        indentation: result['indent_style'] === 'space' ? 'spaces' : 'tabs',
-        spaces: result['indent_size']
-    };
-          console.info(validatorOptions);
-    var validator = new Validator(validatorOptions);
-    validator.validate(filePath);
-
-    console.log(validator.getInvalidFiles());
+const argv = require('minimist')(process.argv.slice(2));
+console.dir(argv);
+argv._.map(function (filename) {
+  return path.join(__dirname, filename);
+}).forEach(function (file) {
+  console.info(`Validating: ${file}`);
+  validator.validate(file);
 });
+console.dir(validator.getInvalidFiles(), {depth: null});
