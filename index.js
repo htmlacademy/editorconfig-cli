@@ -1,3 +1,4 @@
+#! /usr/bin/env node
 const Validator = require('lintspaces');
 const path = require('path');
 
@@ -6,7 +7,9 @@ const validator = new Validator(validatorOptions);
 
 const glob = require('glob');
 
-const argv = require('minimist')(process.argv.slice(2));
+var unparsedArgv = process.argv;
+console.dir(unparsedArgv);
+const argv = require('minimist')(unparsedArgv.slice(2));
 console.dir(argv);
 argv._.map(function (filename) {
   return path.join(__dirname, filename);
@@ -14,4 +17,8 @@ argv._.map(function (filename) {
   console.info(`Validating: ${file}`);
   validator.validate(file);
 });
-console.dir(validator.getInvalidFiles(), {depth: null});
+var invalidFiles = validator.getInvalidFiles();
+if (invalidFiles.length > 0) {
+  console.error();
+  console.dir(invalidFiles, {depth: null});
+}
