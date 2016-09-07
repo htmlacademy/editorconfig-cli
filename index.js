@@ -43,72 +43,75 @@ let resolve = function (filename) {
   return fs.existsSync(resolved) ? resolved : null;
 };
 
-let exists = function (filename) {
-  let filePath = resolve(filename || DEFAULT_EDITORCONFIG_NAME);
+let checkEditorConfig = function (filename) {
+  let filePath = resolve(filename);
+
   log.debug(`Using \'.editorconfig\' from: ${filePath}`);
+
   if (!filePath) {
     log.fatal('Error: Specified .editorconfig "%s" doesn\'t exist');
   }
+
   return filePath;
 };
 
 program
   .usage('[options] \<file ... or \'glob\'\>')
-  .option('-e, --editorconfig',
+  .option('-e, --editorconfig <file>',
     'Pass .editorconfig (by default it will look in ./.editorconfig',
-    exists)
-  .option('-i, --ignores', 'Ignoring profiles. Like (\'js-comments\'' +
+    checkEditorConfig)
+  .option('-i, --ignores <profile-name or regexp>', 'Ignoring profiles. Like (\'js-comments\'' +
     '|\'java-comments\'|\'xml-comments\'|\'html-comments\'|...). Defaults are \'js-comments\'|\'html-comments\'',
     ['js-comments', 'html-comments'])
   .option(VERBOSE_KEYS.join(', '), 'Verbose output')
   .parse(process.argv);
 
 let settings = {
-  editorconfig: program.editorconfig || resolve(DEFAULT_EDITORCONFIG_NAME),
+  editorconfig: program.editorconfig || checkEditorConfig(DEFAULT_EDITORCONFIG_NAME),
   ignores: program.ignores
 };
 
 log.debug(`Verbose: ${util.inspect(settings, {depth: 2})}`);
 log.debug(`Args: ${program.args}`);
 
-let processInvalidFiles = function (invalidFiles) {
-  log.debug(invalidFiles);
-  if (!invalidFiles) return;
-  for (let [filename, info] of invalidFiles) {
+let printReport = function (report) {
+  for (let [filename, info] of report) {
     log.error(util.format('\nFile: %s', filename).red.underline);
 
     for (let [index, line] of info) {
       for (let err of line) {
-        let errType = err.type;
+        let type = err.type;
 
-        if (errType.toLowerCase() === types.WARNING) {
-          errType = errType.red;
-        } else {
-          errType = errType.green;
-        }
+        type = type.toLowerCase() === types.WARNING ? type.red : type.green;
 
-        log.error(util.format('Line: %s %s [%s]', err.line, err.message, errType));
+        log.error(util.format('Line: %s %s [%s]', err.line, err.message, type));
       }
     }
   }
 
 };
 
-let onFile = function (file) {
-  log.debug(`Got file: ${resolve(file)}`);
-  fs.lstat(resolve(file), (err, stat) => {
+let validate = (path) => {
+  fs.lstat(path, (err, stat) => {
     if (!(stat.isDirectory())) {
-      let val = new Validator(settings);
-      val.validate(file);
-      processInvalidFiles(val.getInvalidFiles());
+      log.debug(`Validating '${path}'...`);
+      let validator = new Validator(settings);
+      validator.validate(path);
+      printReport(validator.getInvalidFiles());
     }
   });
 };
+
+let onFile = function (file) {
+  validate(file.path);
+};
+
 let args = Array.isArray(program.args) ? program.args : [program.args];
 args.forEach((it) => {
-  log.debug(`Globbing arg: ${it}`);
-  if (resolve(it)) {
-    onFile(it)
+  var resolved = resolve(it);
+
+  if (resolved) {
+    validate(resolved);
   } else {
     glob.readdirStream(it, {}).on('data', onFile);
   }
