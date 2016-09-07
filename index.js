@@ -1,8 +1,18 @@
 #! /usr/bin/env node
 const Validator = require('lintspaces');
+const types = require('lintspaces/lib/constants/types');
 const path = require('path');
 const fs = require('fs');
 const program = require('commander');
+const glob = require('glob-fs')({gitignore: true});
+const util = require('util');
+
+//Iterate over object props
+Object.prototype[Symbol.iterator] = function*() {
+  for (let key of Object.keys(this)) {
+    yield([key, this[key]])
+  }
+};
 
 // Colors https://www.npmjs.com/package/colors
 require('colors');
@@ -18,20 +28,27 @@ let log = {
     process.exit(1);
   },
   'info': console.log,
+  'error': console.warn,
   'debug': (message) => {
-    if(VERBOSE) {
+    if (VERBOSE) {
       console.log(message);
     }
   }
 };
 
-var exists = function (filename) {
-  filename = filename || '.editorconfig';
-  var filePath = path.resolve(__dirname, filename);
-  if (!fs.existsSync(filePath)) {
+const DEFAULT_EDITORCONFIG_NAME = '.editorconfig';
+
+let resolve = function (filename) {
+  let resolved = path.resolve(__dirname, filename);
+  return fs.existsSync(resolved) ? resolved : null;
+};
+
+let exists = function (filename) {
+  let filePath = resolve(filename || DEFAULT_EDITORCONFIG_NAME);
+  log.debug(`Using \'.editorconfig\' from: ${filePath}`);
+  if (!filePath) {
     log.fatal('Error: Specified .editorconfig "%s" doesn\'t exist');
   }
-  log.debug(`Using \'.editorconfig\' from: ${filePath}`);
   return filePath;
 };
 
@@ -46,27 +63,53 @@ program
   .option(VERBOSE_KEYS.join(', '), 'Verbose output')
   .parse(process.argv);
 
-log.debug(`Verbose: ${program.verbose}`);
+let settings = {
+  editorconfig: program.editorconfig || resolve(DEFAULT_EDITORCONFIG_NAME),
+  ignores: program.ignores
+};
+
+log.debug(`Verbose: ${util.inspect(settings, {depth: 2})}`);
 log.debug(`Args: ${program.args}`);
 
+let processInvalidFiles = function (invalidFiles) {
+  log.debug(invalidFiles);
+  if (!invalidFiles) return;
+  for (let [filename, info] of invalidFiles) {
+    log.error(util.format('\nFile: %s', filename).red.underline);
 
-// program.editorconfig = program.editorconfig ||;
+    for (let [index, line] of info) {
+      for (let err of line) {
+        let errType = err.type;
 
-const validator = new Validator(program);
+        if (errType.toLowerCase() === types.WARNING) {
+          errType = errType.red;
+        } else {
+          errType = errType.green;
+        }
 
-const glob = require('glob');
+        log.error(util.format('Line: %s %s [%s]', err.line, err.message, errType));
+      }
+    }
+  }
 
-var unparsedArgv = process.argv;
-log.debug(unparsedArgv);
-const argv = require('minimist')(unparsedArgv.slice(2));
-argv._.map(function (filename) {
-  return path.join(__dirname, filename);
-}).forEach(function (file) {
-  log.info(`Validating: ${file}`);
-  validator.validate(file);
+};
+
+let onFile = function (file) {
+  log.debug(`Got file: ${resolve(file)}`);
+  fs.lstat(resolve(file), (err, stat) => {
+    if (!(stat.isDirectory())) {
+      let val = new Validator(settings);
+      val.validate(file);
+      processInvalidFiles(val.getInvalidFiles());
+    }
+  });
+};
+let args = Array.isArray(program.args) ? program.args : [program.args];
+args.forEach((it) => {
+  log.debug(`Globbing arg: ${it}`);
+  if (resolve(it)) {
+    onFile(it)
+  } else {
+    glob.readdirStream(it, {}).on('data', onFile);
+  }
 });
-
-var invalidFiles = validator.getInvalidFiles();
-if (invalidFiles.length > 0) {
-  log.info(invalidFiles, {depth: null});
-}
