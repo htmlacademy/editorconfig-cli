@@ -1,6 +1,6 @@
 {
-  "name": "editorconfig-cli",
-  "version": "1.0.0",
+  "name": "check-editorconfig",
+  "version": "0.0.1",
   "description": "Command line interface for .editorconfig",
   "main": "index.js",
   "bin": {
