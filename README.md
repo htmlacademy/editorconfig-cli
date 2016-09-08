@@ -1,5 +1,5 @@
-editorconfig-cli
-================
+check-editorconfig
+==================
 
 Simple command line interface (CLI) for [.editorconfig](http://editorconfig.org) based on the node-lintspaces module. 
 Uses `.editorconfig` by default from current directory. To change default location use `-e` argument.
