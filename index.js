@@ -1,19 +1,11 @@
-#! /usr/bin/env node
+#!/usr/bin/env node
 const Validator = require('lintspaces');
 const types = require('lintspaces/lib/constants/types');
 const path = require('path');
 const fs = require('fs');
 const program = require('commander');
-const glob = require('glob-fs')({gitignore: true});
+const glob = require('glob-fs');
 const util = require('util');
-
-//Iterate over object props
-Object.prototype[Symbol.iterator] = function*() {
-  for (let key of Object.keys(this)) {
-    yield([key, this[key]])
-  }
-};
-
 // Colors https://www.npmjs.com/package/colors
 require('colors');
 
@@ -21,6 +13,17 @@ const VERBOSE_KEYS = ['-v', '--verbose'];
 const VERBOSE = process.argv.find((element) => {
     return VERBOSE_KEYS.indexOf(element) >= 0;
   }) !== undefined;
+const DEFAULT_EDITORCONFIG_NAME = '.editorconfig';
+const JSON_CONFIG_PROPERTY_NAME = 'editorconfig-cli';
+const DEFAULT_JSON_FILENAME = 'package.json';
+
+
+//Iterate over object props
+Object.prototype[Symbol.iterator] = function*() {
+  for (let key of Object.keys(this)) {
+    yield([key, this[key]])
+  }
+};
 
 let log = {
   'fatal': (message) => {
@@ -35,8 +38,6 @@ let log = {
     }
   }
 };
-
-const DEFAULT_EDITORCONFIG_NAME = '.editorconfig';
 
 let resolve = function (filename) {
   let resolved = path.resolve(filename);
@@ -55,6 +56,11 @@ let checkEditorConfig = function (filename) {
   return filePath;
 };
 
+let collect = (value, memo) => {
+  memo.push(value);
+  return memo;
+};
+
 program
   .usage('[options] \<file ... or \'glob\'\>')
   .option('-e, --editorconfig <file>',
@@ -63,16 +69,20 @@ program
   .option('-i, --ignores <profile-name or regexp>', 'ignoring profiles. Like (\'js-comments\'' +
     '|\'java-comments\'|\'xml-comments\'|\'html-comments\'|...). Defaults are \'js-comments\'|\'html-comments\'',
     ['js-comments', 'html-comments'])
+  .option('-j, --json <file>', 'load GLOBs from JSON file. If no input passed, then it tries to find array in package.json')
+  .option('-x, --exclude <regexp>', 'exclude files by pattern. Default \'normalize.*\'', collect, ['/normalize.*'])
   .option(VERBOSE_KEYS.join(', '), 'verbose output')
   .parse(process.argv);
 
 let settings = {
   editorconfig: program.editorconfig || checkEditorConfig(DEFAULT_EDITORCONFIG_NAME),
-  ignores: program.ignores
+  ignores: program.ignores,
+  json: program.json || DEFAULT_JSON_FILENAME,
+  exclude: program.exclude || []
 };
 
-log.debug(`Verbose: ${util.inspect(settings, {depth: 2})}`);
-log.debug(`Args: '${program.args}'`);
+log.debug(`Using settings: ${util.inspect(settings, {depth: 2})}`);
+log.debug(`Passed args: '${program.args}'`);
 
 let printReport = function (report) {
   for (let [filename, info] of report) {
@@ -106,15 +116,49 @@ let onFile = function (file) {
   validate(file.path);
 };
 
-if (program.args === '') program.help();
+var processInput = function (args) {
+  let myGlob = glob({gitignore: true});
+  for (let exclude of settings.exclude.map((regexp) => {
+    return new RegExp(regexp);
+  })) {
+    myGlob.use((file) => {
+      log.debug(`Testing file '${file.path}' on '${exclude.toString()}'`);
+      if (exclude.test(file.path)) {
+        log.info(`File: ${file.path} [${'excluded'.green}]`);
+        file.exclude = true;
+      }
+      return file;
+    });
+  }
+  for (let it of args) {
+    var resolved = resolve(it);
+    if (resolved) {
+      validate(resolved);
+    } else {
+      myGlob.readdirStream(it).on('data', onFile);
+    }
+  }
+};
 
 let args = Array.isArray(program.args) ? program.args : [program.args];
-args.forEach((it) => {
-  var resolved = resolve(it);
-
-  if (resolved) {
-    validate(resolved);
-  } else {
-    glob.readdirStream(it, {}).on('data', onFile);
-  }
-});
+if (args.length === 0) {
+  let found = resolve(settings.json);
+  fs.readFile(found, 'utf8', (err, data) => {
+    log.debug(`Reading GLOBs from file: '${found}...`);
+    try {
+      if (err) throw err;
+      var globs = JSON.parse(data)[JSON_CONFIG_PROPERTY_NAME];
+      if (!globs || globs.length === 0) {
+        log.info('Nothing to do =(');
+        program.help();
+      } else {
+        log.info(`Found globs: ${globs}`);
+        processInput(globs);
+      }
+    } catch (e) {
+      log.error(`Failed to read JSON file: ${e}`.red);
+    }
+  })
+} else {
+  processInput(args);
+}
