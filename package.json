@@ -1,28 +1,30 @@
 {
   "name": "check-editorconfig",
-  "version": "0.0.1",
-  "description": "Command line interface for .editorconfig",
+  "version": "0.0.2",
+  "description": "Command line interface for project files with .editorconfig",
   "main": "index.js",
   "bin": {
-    "editorconfig": "./index.js"
+    "check-editorconfig": "./index.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zeckson/editorconfig-cli.git"
+    "url": "git@github.com:htmlacademy/editorconfig-cli.git"
   },
   "keywords": [
     "editorconfig",
-    "cli"
+    "cli",
+    "validate",
+    "check"
   ],
   "author": "zeckson",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/zeckson/editorconfig-cli/issues"
+    "url": "https://github.com/htmlacademy/editorconfig-cli/issues"
   },
-  "homepage": "https://github.com/zeckson/editorconfig-cli#readme",
+  "homepage": "https://github.com/htmlacademy/editorconfig-cli#readme",
   "dependencies": {
     "colors": "1.1.2",
     "commander": "2.9.0",
