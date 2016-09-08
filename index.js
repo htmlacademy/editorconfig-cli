@@ -39,7 +39,7 @@ let log = {
 const DEFAULT_EDITORCONFIG_NAME = '.editorconfig';
 
 let resolve = function (filename) {
-  let resolved = path.resolve(__dirname, filename);
+  let resolved = path.resolve(filename);
   return fs.existsSync(resolved) ? resolved : null;
 };
 
