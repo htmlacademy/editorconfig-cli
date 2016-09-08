@@ -1,5 +1,5 @@
 {
-  "name": "check-editorconfig",
+  "name": "@htmlacademy/check-editorconfig",
   "version": "0.0.2",
   "description": "Command line interface for project files with .editorconfig",
   "main": "index.js",
