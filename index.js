@@ -24,7 +24,7 @@ const VERBOSE = process.argv.find((element) => {
 
 let log = {
   'fatal': (message) => {
-    console.log(message.red, filename);
+    console.log(message.red);
     process.exit(1);
   },
   'info': console.log,
@@ -46,10 +46,10 @@ let resolve = function (filename) {
 let checkEditorConfig = function (filename) {
   let filePath = resolve(filename);
 
-  log.debug(`Using \'.editorconfig\' from: ${filePath}`);
+  log.info(`Using \'.editorconfig\' from: "${filePath}"`);
 
   if (!filePath) {
-    log.fatal('Error: Specified .editorconfig "%s" doesn\'t exist');
+    log.fatal(`Error: Specified .editorconfig "${filename}" doesn\'t exist`);
   }
 
   return filePath;
@@ -72,7 +72,7 @@ let settings = {
 };
 
 log.debug(`Verbose: ${util.inspect(settings, {depth: 2})}`);
-log.debug(`Args: ${program.args}`);
+log.debug(`Args: '${program.args}'`);
 
 let printReport = function (report) {
   for (let [filename, info] of report) {
@@ -105,6 +105,8 @@ let validate = (path) => {
 let onFile = function (file) {
   validate(file.path);
 };
+
+if (program.args === '') program.help();
 
 let args = Array.isArray(program.args) ? program.args : [program.args];
 args.forEach((it) => {
