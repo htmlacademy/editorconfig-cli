@@ -112,24 +112,31 @@ let validate = (path) => {
   });
 };
 
+let excludes = settings.exclude.map((regexp) => {
+  return new RegExp(regexp);
+});
+
 let onFile = function (file) {
-  validate(file.path);
+  var myPath = file.path;
+
+  var matches = excludes.find((exclude) => {
+    log.debug(`Testing file '${file.path}' on '${exclude.toString()}'`);
+
+    var excluded = exclude.test(file.path);
+    if (excluded) {
+      log.info(`File: ${file.path} [${'excluded'.green}]`);
+    }
+
+    return excluded;
+  });
+
+  if (!matches) {
+    validate(myPath);
+  }
 };
 
 var processInput = function (args) {
   let myGlob = glob({gitignore: true});
-  for (let exclude of settings.exclude.map((regexp) => {
-    return new RegExp(regexp);
-  })) {
-    myGlob.use((file) => {
-      log.debug(`Testing file '${file.path}' on '${exclude.toString()}'`);
-      if (exclude.test(file.path)) {
-        log.info(`File: ${file.path} [${'excluded'.green}]`);
-        file.exclude = true;
-      }
-      return file;
-    });
-  }
   for (let it of args) {
     var resolved = resolve(it);
     if (resolved) {
@@ -152,7 +159,7 @@ if (args.length === 0) {
         log.info('Nothing to do =(');
         program.help();
       } else {
-        log.info(`Found globs: ${globs}`);
+        log.info(`Loaded GLOBs from '${found}': ${globs}`);
         processInput(globs);
       }
     } catch (e) {
