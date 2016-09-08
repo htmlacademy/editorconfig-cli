@@ -58,12 +58,12 @@ let checkEditorConfig = function (filename) {
 program
   .usage('[options] \<file ... or \'glob\'\>')
   .option('-e, --editorconfig <file>',
-    'Pass .editorconfig (by default it will look in ./.editorconfig',
+    'pass .editorconfig (by default it will look in \'./.editorconfig\')',
     checkEditorConfig)
-  .option('-i, --ignores <profile-name or regexp>', 'Ignoring profiles. Like (\'js-comments\'' +
+  .option('-i, --ignores <profile-name or regexp>', 'ignoring profiles. Like (\'js-comments\'' +
     '|\'java-comments\'|\'xml-comments\'|\'html-comments\'|...). Defaults are \'js-comments\'|\'html-comments\'',
     ['js-comments', 'html-comments'])
-  .option(VERBOSE_KEYS.join(', '), 'Verbose output')
+  .option(VERBOSE_KEYS.join(', '), 'verbose output')
   .parse(process.argv);
 
 let settings = {
