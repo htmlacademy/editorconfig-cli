@@ -117,12 +117,12 @@ let excludes = settings.exclude.map((regexp) => {
 });
 
 let onFile = function (file) {
-  var myPath = file.path;
+  let myPath = file.path;
 
-  var matches = excludes.find((exclude) => {
+  let matches = excludes.find((exclude) => {
     log.debug(`Testing file '${file.path}' on '${exclude.toString()}'`);
 
-    var excluded = exclude.test(file.path);
+    let excluded = exclude.test(file.path);
     if (excluded) {
       log.info(`File: ${file.path} [${'excluded'.green}]`);
     }
@@ -135,13 +135,14 @@ let onFile = function (file) {
   }
 };
 
-var processInput = function (args) {
-  let myGlob = glob({gitignore: true});
+let processInput = function (args) {
   for (let it of args) {
     var resolved = resolve(it);
     if (resolved) {
       validate(resolved);
     } else {
+      log.debug(`Calling GLOB: ${it}`);
+      let myGlob = glob({gitignore: true});
       myGlob.readdirStream(it).on('data', onFile);
     }
   }
