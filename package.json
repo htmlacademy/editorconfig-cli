@@ -1,6 +1,6 @@
 {
   "name": "@htmlacademy/editorconfig-cli",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Command line interface for project files with .editorconfig",
   "main": "index.js",
   "bin": {
