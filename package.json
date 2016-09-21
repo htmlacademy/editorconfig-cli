@@ -35,12 +35,13 @@
     "mocha": "3.0.2"
   },
   "editorconfig-cli": [
-    "./*.html",
-    "./*.json",
-    "./img/**/*.svg",
-    "./js/**/*.js",
-    "./less/**/*.less",
-    "./sass/**/*.{sass,scss}",
-    "./postcss/**/*.{css,pcss}"
+    "*.html",
+    "*.json",
+    "img/**/*.svg",
+    "js/**/*.js",
+    "test/**/*.*",
+    "less/**/*.less",
+    "sass/**/*.{sass,scss}",
+    "postcss/**/*.{css,pcss}"
   ]
 }

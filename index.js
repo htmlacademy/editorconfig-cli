@@ -84,6 +84,12 @@ let settings = {
 log.debug(`Using settings: ${util.inspect(settings, {depth: 2})}`);
 log.debug(`Passed args: '${program.args}'`);
 
+let exitCode = 0;
+
+process.on('beforeExit', () => {
+  process.exit(exitCode);
+});
+
 let printReport = function (report) {
   for (let [filename, info] of report) {
     log.error(util.format('\nFile: %s', filename).red.underline);
@@ -92,7 +98,12 @@ let printReport = function (report) {
       for (let err of line) {
         let type = err.type;
 
-        type = type.toLowerCase() === types.WARNING ? type.red : type.green;
+        let warn = type.toLowerCase() === types.WARNING;
+        type = warn ? type.red : type.green;
+
+        if (warn) {
+          exitCode = 1;
+        }
 
         log.error(util.format('Line: %s %s [%s]', err.line, err.message, type));
       }
