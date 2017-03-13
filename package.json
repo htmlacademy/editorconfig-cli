@@ -7,7 +7,7 @@
     "editorconfig-cli": "./index.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "eslint index.js"
   },
   "repository": {
     "type": "git",
@@ -32,6 +32,8 @@
     "lintspaces": "0.5.0"
   },
   "devDependencies": {
+    "eslint": "3.17.1",
+    "eslint-config-htmlacademy": "0.2.3",
     "mocha": "3.0.2"
   },
   "editorconfig-cli": [
