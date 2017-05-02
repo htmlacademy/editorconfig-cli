@@ -4,7 +4,7 @@ const types = require(`lintspaces/lib/constants/types`);
 const path = require(`path`);
 const fs = require(`fs`);
 const program = require(`commander`);
-const glob = require(`glob-fs`);
+const glob = require(`glob`);
 const util = require(`util`);
 // Colors https://www.npmjs.com/package/colors
 require(`colors`);
@@ -39,8 +39,8 @@ let log = {
   }
 };
 
-let resolve = function (filename) {
-  let resolved = path.resolve(filename);
+const resolve = function (filename) {
+  const resolved = path.resolve(filename);
   return fs.existsSync(resolved) ? resolved : null;
 };
 
@@ -112,30 +112,31 @@ let printReport = function (report) {
 
 };
 
-let validate = (filePath) => {
+const validate = (filePath) => {
   fs.lstat(filePath, (err, stat) => {
     if (!(stat.isDirectory())) {
       log.debug(`Validating '${filePath}'...`);
-      let validator = new Validator(settings);
+      const validator = new Validator(settings);
       validator.validate(filePath);
       printReport(validator.getInvalidFiles());
     }
   });
 };
 
-let excludes = settings.exclude.map((regexp) => {
+const excludes = settings.exclude.map((regexp) => {
   return new RegExp(regexp);
 });
 
-let onFile = function (file) {
-  let myPath = file.path;
+const onFile = function (file) {
+  log.debug(`Validating ${file}...`);
+  const myPath = file;
 
-  let matches = excludes.find((exclude) => {
-    log.debug(`Testing file '${file.path}' on '${exclude.toString()}'`);
+  const matches = excludes.some((exclude) => {
+    log.debug(`Testing file '${myPath}' on '${exclude.toString()}'`);
 
-    let excluded = exclude.test(file.path);
+    const excluded = exclude.test(myPath);
     if (excluded) {
-      log.info(`File: ${file.path} [${`excluded`.green}]`);
+      log.info(`File: ${myPath} [${`excluded`.green}]`);
     }
 
     return excluded;
@@ -147,14 +148,19 @@ let onFile = function (file) {
 };
 
 let processInput = function (args) {
-  for (let it of args) {
-    let resolved = resolve(it);
+  for (const it of args) {
+    const resolved = resolve(it);
     if (resolved) {
       validate(resolved);
     } else {
       log.debug(`Calling GLOB: ${it}`);
-      let myGlob = glob({gitignore: true});
-      myGlob.readdirStream(it).on(`data`, onFile);
+      glob(it, {gitignore: true}, (er, files) => {
+        if (er) {
+          throw er;
+        }
+
+        files.forEach(onFile)
+      });
     }
   }
 };
@@ -168,13 +174,13 @@ if (args.length === 0) {
       if (err) {
         throw err;
       }
-      let globs = JSON.parse(data)[JSON_CONFIG_PROPERTY_NAME];
-      if (!globs || globs.length === 0) {
+      const patterns = JSON.parse(data)[JSON_CONFIG_PROPERTY_NAME];
+      if (!patterns || patterns.length === 0) {
         log.info(`Nothing to do =(`);
         program.help();
       } else {
-        log.info(`Loaded GLOBs from '${found}': ${globs}`);
-        processInput(globs);
+        log.info(`Loaded GLOBs from '${found}': ${patterns}`);
+        processInput(patterns);
       }
     } catch (e) {
       log.error(`Failed to read JSON file: ${e}`.red);
