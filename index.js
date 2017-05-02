@@ -113,7 +113,13 @@ let printReport = function (report) {
 };
 
 const validate = (filePath) => {
+  log.debug(`Validating ${filePath}...`);
+
   fs.lstat(filePath, (err, stat) => {
+    if (err) {
+      throw err;
+    }
+
     if (!(stat.isDirectory())) {
       log.debug(`Validating '${filePath}'...`);
       const validator = new Validator(settings);
@@ -128,7 +134,6 @@ const excludes = settings.exclude.map((regexp) => {
 });
 
 const onFile = function (file) {
-  log.debug(`Validating ${file}...`);
   const myPath = file;
 
   const matches = excludes.some((exclude) => {
@@ -154,12 +159,12 @@ let processInput = function (args) {
       validate(resolved);
     } else {
       log.debug(`Calling GLOB: ${it}`);
-      glob(it, {gitignore: true}, (er, files) => {
-        if (er) {
-          throw er;
+      glob(it, {gitignore: true}, (err, files) => {
+        if (err) {
+          throw err;
         }
 
-        files.forEach(onFile)
+        files.forEach(onFile);
       });
     }
   }
@@ -174,6 +179,7 @@ if (args.length === 0) {
       if (err) {
         throw err;
       }
+
       const patterns = JSON.parse(data)[JSON_CONFIG_PROPERTY_NAME];
       if (!patterns || patterns.length === 0) {
         log.info(`Nothing to do =(`);
