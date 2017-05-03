@@ -20,12 +20,12 @@ const DEFAULT_JSON_FILENAME = `package.json`;
 
 // Iterate over object props
 Object.prototype[Symbol.iterator] = function* () {
-  for (let key of Object.keys(this)) {
+  for (const key of Object.keys(this)) {
     yield ([key, this[key]]);
   }
 };
 
-let log = {
+const log = {
   'fatal': (message) => {
     console.log(message.red);
     process.exit(1);
@@ -44,8 +44,8 @@ const resolve = function (filename) {
   return fs.existsSync(resolved) ? resolved : null;
 };
 
-let checkEditorConfig = function (filename) {
-  let filePath = resolve(filename);
+const checkEditorConfig = function (filename) {
+  const filePath = resolve(filename);
 
   log.info(`Using \'.editorconfig\' from: "${filePath}"`);
 
@@ -56,7 +56,7 @@ let checkEditorConfig = function (filename) {
   return filePath;
 };
 
-let collect = (value, memo) => {
+const collect = (value, memo) => {
   memo.push(value);
   return memo;
 };
@@ -74,7 +74,7 @@ program
   .option(VERBOSE_KEYS.join(`, `), `verbose output`)
   .parse(process.argv);
 
-let settings = {
+const settings = {
   editorconfig: program.editorconfig || checkEditorConfig(DEFAULT_EDITORCONFIG_NAME),
   ignores: program.ignores,
   json: program.json || DEFAULT_JSON_FILENAME,
@@ -90,15 +90,15 @@ process.on(`beforeExit`, () => {
   process.exit(exitCode);
 });
 
-let printReport = function (report) {
-  for (let [filename, info] of report) {
+const printReport = function (report) {
+  for (const [filename, info] of report) {
     log.error(util.format(`\nFile: %s`, filename).red.underline);
 
-    for (let [, line] of info) {
-      for (let err of line) {
+    for (const [, line] of info) {
+      for (const err of line) {
         let type = err.type;
 
-        let warn = type.toLowerCase() === types.WARNING;
+        const warn = type.toLowerCase() === types.WARNING;
         type = warn ? type.red : type.green;
 
         if (warn) {
@@ -113,7 +113,7 @@ let printReport = function (report) {
 };
 
 const validate = (filePath) => {
-  log.debug(`Validating ${filePath}...`);
+  log.debug(`Loading ${filePath}...`);
 
   fs.lstat(filePath, (err, stat) => {
     if (err) {
@@ -152,7 +152,7 @@ const onFile = function (file) {
   }
 };
 
-let processInput = function (args) {
+const processInput = function (args) {
   for (const it of args) {
     const resolved = resolve(it);
     if (resolved) {
@@ -170,9 +170,9 @@ let processInput = function (args) {
   }
 };
 
-let args = Array.isArray(program.args) ? program.args : [program.args];
+const args = Array.isArray(program.args) ? program.args : [program.args];
 if (args.length === 0) {
-  let found = resolve(settings.json);
+  const found = resolve(settings.json);
   fs.readFile(found, `utf8`, (err, data) => {
     log.debug(`Reading GLOBs from file: '${found}...`);
     try {
