@@ -53,7 +53,10 @@ const checkEditorConfig = function (filename) {
     log.fatal(`Error: Specified .editorconfig "${filename}" doesn\'t exist`);
   }
 
-  return filePath;
+  // BC! .editorconfig lib inside is looking for all possible paths relatively
+  // So there is no way to pass absolute path
+  // Absolute path will break on WinOS
+  return filename;
 };
 
 const collect = (value, memo) => {
