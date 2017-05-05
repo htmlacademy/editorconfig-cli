@@ -67,7 +67,8 @@ const collect = (value, memo) => {
 program
   .usage(`[options] \<file ... or 'glob'\>`)
   .option(`-e, --editorconfig <file>`,
-    `pass .editorconfig (by default it will look in './.editorconfig')`,
+    `pass .editorconfig (by default it will look in './.editorconfig').\
+  !Warning! absolute paths are not supported or will break on Windows OS`,
     checkEditorConfig)
   .option(`-i, --ignores <profile-name or regexp>`, `ignoring profiles. Like ('js-comments'` +
     `|'java-comments'|'xml-comments'|'html-comments'|...). Defaults are 'js-comments'|'html-comments'`,
