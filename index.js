@@ -4,7 +4,7 @@ const types = require(`lintspaces/lib/constants/types`);
 const path = require(`path`);
 const fs = require(`fs`);
 const program = require(`commander`);
-const glob = require(`glob-fs`);
+const glob = require(`glob`);
 const util = require(`util`);
 // Colors https://www.npmjs.com/package/colors
 require(`colors`);
@@ -20,12 +20,12 @@ const DEFAULT_JSON_FILENAME = `package.json`;
 
 // Iterate over object props
 Object.prototype[Symbol.iterator] = function* () {
-  for (let key of Object.keys(this)) {
+  for (const key of Object.keys(this)) {
     yield ([key, this[key]]);
   }
 };
 
-let log = {
+const log = {
   'fatal': (message) => {
     console.log(message.red);
     process.exit(1);
@@ -39,13 +39,13 @@ let log = {
   }
 };
 
-let resolve = function (filename) {
-  let resolved = path.resolve(filename);
+const resolve = function (filename) {
+  const resolved = path.resolve(filename);
   return fs.existsSync(resolved) ? resolved : null;
 };
 
-let checkEditorConfig = function (filename) {
-  let filePath = resolve(filename);
+const checkEditorConfig = function (filename) {
+  const filePath = resolve(filename);
 
   log.info(`Using \'.editorconfig\' from: "${filePath}"`);
 
@@ -53,10 +53,13 @@ let checkEditorConfig = function (filename) {
     log.fatal(`Error: Specified .editorconfig "${filename}" doesn\'t exist`);
   }
 
-  return filePath;
+  // BC! .editorconfig lib inside is looking for all possible paths relatively
+  // So there is no way to pass absolute path
+  // Absolute path will break on WinOS
+  return filename;
 };
 
-let collect = (value, memo) => {
+const collect = (value, memo) => {
   memo.push(value);
   return memo;
 };
@@ -64,7 +67,8 @@ let collect = (value, memo) => {
 program
   .usage(`[options] \<file ... or 'glob'\>`)
   .option(`-e, --editorconfig <file>`,
-    `pass .editorconfig (by default it will look in './.editorconfig')`,
+    `pass .editorconfig (by default it will look in './.editorconfig').\
+  !Warning! absolute paths are not supported or will break on Windows OS`,
     checkEditorConfig)
   .option(`-i, --ignores <profile-name or regexp>`, `ignoring profiles. Like ('js-comments'` +
     `|'java-comments'|'xml-comments'|'html-comments'|...). Defaults are 'js-comments'|'html-comments'`,
@@ -74,7 +78,7 @@ program
   .option(VERBOSE_KEYS.join(`, `), `verbose output`)
   .parse(process.argv);
 
-let settings = {
+const settings = {
   editorconfig: program.editorconfig || checkEditorConfig(DEFAULT_EDITORCONFIG_NAME),
   ignores: program.ignores,
   json: program.json || DEFAULT_JSON_FILENAME,
@@ -90,15 +94,15 @@ process.on(`beforeExit`, () => {
   process.exit(exitCode);
 });
 
-let printReport = function (report) {
-  for (let [filename, info] of report) {
+const printReport = function (report) {
+  for (const [filename, info] of report) {
     log.error(util.format(`\nFile: %s`, filename).red.underline);
 
-    for (let [, line] of info) {
-      for (let err of line) {
+    for (const [, line] of info) {
+      for (const err of line) {
         let type = err.type;
 
-        let warn = type.toLowerCase() === types.WARNING;
+        const warn = type.toLowerCase() === types.WARNING;
         type = warn ? type.red : type.green;
 
         if (warn) {
@@ -112,30 +116,36 @@ let printReport = function (report) {
 
 };
 
-let validate = (filePath) => {
+const validate = (filePath) => {
+  log.debug(`Loading ${filePath}...`);
+
   fs.lstat(filePath, (err, stat) => {
+    if (err) {
+      throw err;
+    }
+
     if (!(stat.isDirectory())) {
       log.debug(`Validating '${filePath}'...`);
-      let validator = new Validator(settings);
+      const validator = new Validator(settings);
       validator.validate(filePath);
       printReport(validator.getInvalidFiles());
     }
   });
 };
 
-let excludes = settings.exclude.map((regexp) => {
+const excludes = settings.exclude.map((regexp) => {
   return new RegExp(regexp);
 });
 
-let onFile = function (file) {
-  let myPath = file.path;
+const onFile = function (file) {
+  const myPath = file;
 
-  let matches = excludes.find((exclude) => {
-    log.debug(`Testing file '${file.path}' on '${exclude.toString()}'`);
+  const matches = excludes.some((exclude) => {
+    log.debug(`Testing file '${myPath}' on '${exclude.toString()}'`);
 
-    let excluded = exclude.test(file.path);
+    const excluded = exclude.test(myPath);
     if (excluded) {
-      log.info(`File: ${file.path} [${`excluded`.green}]`);
+      log.info(`File: ${myPath} [${`excluded`.green}]`);
     }
 
     return excluded;
@@ -146,35 +156,41 @@ let onFile = function (file) {
   }
 };
 
-let processInput = function (args) {
-  for (let it of args) {
-    let resolved = resolve(it);
+const processInput = function (args) {
+  for (const it of args) {
+    const resolved = resolve(it);
     if (resolved) {
       validate(resolved);
     } else {
       log.debug(`Calling GLOB: ${it}`);
-      let myGlob = glob({gitignore: true});
-      myGlob.readdirStream(it).on(`data`, onFile);
+      glob(it, {gitignore: true}, (err, files) => {
+        if (err) {
+          throw err;
+        }
+
+        files.forEach(onFile);
+      });
     }
   }
 };
 
-let args = Array.isArray(program.args) ? program.args : [program.args];
+const args = Array.isArray(program.args) ? program.args : [program.args];
 if (args.length === 0) {
-  let found = resolve(settings.json);
+  const found = resolve(settings.json);
   fs.readFile(found, `utf8`, (err, data) => {
     log.debug(`Reading GLOBs from file: '${found}...`);
     try {
       if (err) {
         throw err;
       }
-      let globs = JSON.parse(data)[JSON_CONFIG_PROPERTY_NAME];
-      if (!globs || globs.length === 0) {
+
+      const patterns = JSON.parse(data)[JSON_CONFIG_PROPERTY_NAME];
+      if (!patterns || patterns.length === 0) {
         log.info(`Nothing to do =(`);
         program.help();
       } else {
-        log.info(`Loaded GLOBs from '${found}': ${globs}`);
-        processInput(globs);
+        log.info(`Loaded GLOBs from '${found}': ${patterns}`);
+        processInput(patterns);
       }
     } catch (e) {
       log.error(`Failed to read JSON file: ${e}`.red);
