@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 const Validator = require(`lintspaces`);
-const types = require(`lintspaces/lib/constants/types`);
+const types = require(`lintspaces/src/constants/types`);
 const path = require(`path`);
 const fs = require(`fs`);
 const program = require(`commander`);
@@ -158,13 +158,15 @@ const processInput = function (args) {
       validate(resolved);
     } else {
       log.debug(`Calling GLOB: ${it}`);
-      glob(it, {gitignore: true}, (err, files) => {
-        if (err) {
-          throw err;
-        }
-
-        files.forEach(onFile);
-      });
+      glob(it, {gitignore: true})
+        .then(
+            (files) => {
+              files.forEach(onFile);
+            },
+            (err) => {
+              throw err;
+            }
+        );
     }
   }
 };
