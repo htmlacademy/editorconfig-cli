@@ -1,6 +1,8 @@
 editorconfig-cli
 ================
 
+[![Vulnerabilities count][vulnerabilities-image]][vulnerabilities-url]
+
 Simple command line interface (CLI) for [.editorconfig](https://editorconfig.org) based on the node-lintspaces module. 
 Uses `.editorconfig` by default from current directory. To change default location use `-e` argument.
 Supports [GLOB format](https://github.com/isaacs/node-glob).
@@ -78,3 +80,6 @@ editorconfig-cli -i 'js-comments' -i 'c-comments'
 ```
 
 If parameters are omitted, then `js-comments` and `html-comments` are used. 
+
+[vulnerabilities-url]: https://snyk.io/test/github/htmlacademy/editorconfig-cli
+[vulnerabilities-image]: https://snyk.io/test/github/htmlacademy/editorconfig-cli/badge.svg
