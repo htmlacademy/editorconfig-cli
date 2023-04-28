@@ -2,7 +2,8 @@
   "name": "@htmlacademy/editorconfig-cli",
   "version": "1.0.0",
   "description": "Command line interface for project files with .editorconfig",
-  "main": "index.js",
+  "type": "module",
+  "exports": "./index.js",
   "bin": {
     "editorconfig-cli": "./index.js"
   },
@@ -25,6 +26,9 @@
     "url": "https://github.com/htmlacademy/editorconfig-cli/issues"
   },
   "homepage": "https://github.com/htmlacademy/editorconfig-cli#readme",
+  "engines": {
+    "node": ">=16"
+  },
   "dependencies": {
     "colors": "1.4.0",
     "commander": "10.0.1",
