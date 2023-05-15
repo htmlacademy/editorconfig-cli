@@ -8,7 +8,9 @@
     "editorconfig-cli": "./index.js"
   },
   "scripts": {
-    "test": "eslint index.js"
+    "lint": "eslint index.js",
+    "test": "node ./index.js",
+    "pretest": "npm run lint"
   },
   "repository": {
     "type": "git",
