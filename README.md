@@ -50,18 +50,19 @@ editorconfig-cli
 ```
 
 Format of JSON with GLOBs:
+
+File: `glob.json`
 ```json
-glob.json
 {
   "editorconfig-cli": [
-                          "./*.html",
-                          "./*.json",
-                          "./img/**/*.svg",
-                          "./js/**/*.js",
-                          "./less/**/*.less",
-                          "./sass/**/*.{sass,scss}",
-                          "./postcss/**/*.{css,pcss}"
-                        ]
+    "./*.html",
+    "./*.json",
+    "./img/**/*.svg",
+    "./js/**/*.js",
+    "./less/**/*.less",
+    "./sass/**/*.{sass,scss}",
+    "./postcss/**/*.{css,pcss}"
+  ]
 }
 ```
 
