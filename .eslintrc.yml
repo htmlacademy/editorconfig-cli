@@ -1,7 +1,8 @@
 env:
   node: true
-  commonjs: true
   es6: true
+parserOptions:
+  sourceType: module
 extends: 'htmlacademy/es6'
 rules:
  strict:
@@ -12,4 +13,3 @@ rules:
   - off
  no-process-exit:
   - off
-

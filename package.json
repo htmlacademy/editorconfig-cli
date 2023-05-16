@@ -2,12 +2,15 @@
   "name": "@htmlacademy/editorconfig-cli",
   "version": "1.0.0",
   "description": "Command line interface for project files with .editorconfig",
-  "main": "index.js",
+  "type": "module",
+  "exports": "./index.js",
   "bin": {
     "editorconfig-cli": "./index.js"
   },
   "scripts": {
-    "test": "eslint index.js"
+    "lint": "eslint index.js",
+    "test": "node ./index.js",
+    "pretest": "npm run lint"
   },
   "repository": {
     "type": "git",
@@ -25,16 +28,18 @@
     "url": "https://github.com/htmlacademy/editorconfig-cli/issues"
   },
   "homepage": "https://github.com/htmlacademy/editorconfig-cli#readme",
+  "engines": {
+    "node": ">=16"
+  },
   "dependencies": {
-    "colors": "1.1.2",
-    "commander": "2.9.0",
-    "glob": "7.1.1",
-    "lintspaces": "0.5.0"
+    "colors": "1.4.0",
+    "commander": "10.0.1",
+    "glob": "10.2.2",
+    "lintspaces": "0.10.3"
   },
   "devDependencies": {
-    "eslint": "3.17.1",
-    "eslint-config-htmlacademy": "0.2.3",
-    "mocha": "3.0.2"
+    "eslint": "8.39.0",
+    "eslint-config-htmlacademy": "9.0.0"
   },
   "editorconfig-cli": [
     "*.html",
