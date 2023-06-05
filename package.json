@@ -16,7 +16,7 @@
     "pretest": "npm run lint",
     "preversion": "npm run lint",
     "postversion": "npm publish",
-    "postpublish": "git push origin --all; git push origin --tags"
+    "postpublish": "git push origin --all && git push origin --tags"
   },
   "repository": {
     "type": "git",
