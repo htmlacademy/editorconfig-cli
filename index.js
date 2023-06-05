@@ -36,7 +36,7 @@ const log = {
   }
 };
 
-const resolve = function (filename) {
+const resolve = (filename) => {
   const resolved = pathResolve(filename);
   return existsSync(resolved) ? resolved : null;
 };
