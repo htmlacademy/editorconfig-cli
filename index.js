@@ -9,7 +9,7 @@ import {glob} from "glob";
 import "colors";
 
 const VERBOSE_KEYS = [`-v`, `--verbose`];
-const VERBOSE = !!(process.argv.find((element) => VERBOSE_KEYS.indexOf(element) >= 0));
+const VERBOSE = process.argv.some((element) => VERBOSE_KEYS.includes(element));
 const DEFAULT_EDITORCONFIG_NAME = `.editorconfig`;
 const JSON_CONFIG_PROPERTY_NAME = `editorconfig-cli`;
 const DEFAULT_JSON_FILENAME = `package.json`;
