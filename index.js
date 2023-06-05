@@ -23,13 +23,13 @@ Object.prototype[Symbol.iterator] = function* () {
 };
 
 const log = {
-  'fatal': (message) => {
+  fatal(message) {
     console.log(message.red);
     process.exit(1);
   },
-  'info': console.log,
-  'error': console.warn,
-  'debug': (message) => {
+  info: console.log,
+  error: console.warn,
+  debug: (message) => {
     if (VERBOSE) {
       console.log(message);
     }
