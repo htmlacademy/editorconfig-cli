@@ -17,8 +17,8 @@ const DEFAULT_JSON_FILENAME = `package.json`;
 
 // Iterate over object props
 Object.prototype[Symbol.iterator] = function* () {
-  for (const key of Object.keys(this)) {
-    yield ([key, this[key]]);
+  for (const [key, value] of Object.entries(this)) {
+    yield [key, value];
   }
 };
 
