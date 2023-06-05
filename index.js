@@ -44,11 +44,12 @@ const resolve = (filename) => {
 const checkEditorConfig = function (filename) {
   const filePath = resolve(filename);
 
-  log.info(`Using \'.editorconfig\' from: "${filePath}"`);
-
   if (!filePath) {
     log.fatal(`Error: Specified .editorconfig "${filename}" doesn\'t exist`);
+    return null;
   }
+
+  log.info(`Using \'.editorconfig\' from: "${filePath}"`);
 
   // BC! .editorconfig lib inside is looking for all possible paths relatively
   // So there is no way to pass absolute path
