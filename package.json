@@ -1,6 +1,6 @@
 {
   "name": "@htmlacademy/editorconfig-cli",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Command line interface for project files with .editorconfig",
   "type": "module",
   "exports": "./index.js",
@@ -14,9 +14,9 @@
     "lint": "eslint index.js",
     "test": "node ./index.js",
     "pretest": "npm run lint",
-		"preversion": "npm run lint",
-		"postversion": "npm publish",
-		"postpublish": "git push origin --all; git push origin --tags"
+    "preversion": "npm run lint",
+    "postversion": "npm publish",
+    "postpublish": "git push origin --all; git push origin --tags"
   },
   "repository": {
     "type": "git",
