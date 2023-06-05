@@ -125,9 +125,7 @@ const validate = (filePath) => {
   });
 };
 
-const excludes = settings.exclude.map((regexp) => {
-  return new RegExp(regexp);
-});
+const excludes = settings.exclude.map((regexp) => new RegExp(regexp));
 
 const onFile = function (file) {
   const myPath = file;
