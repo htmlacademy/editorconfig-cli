@@ -7,6 +7,9 @@
   "bin": {
     "editorconfig-cli": "./index.js"
   },
+  "files": [
+    "./index.js"
+  ],
   "scripts": {
     "lint": "eslint index.js",
     "test": "node ./index.js",
