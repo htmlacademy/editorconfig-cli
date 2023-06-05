@@ -87,7 +87,7 @@ process.on(`beforeExit`, () => {
   process.exit(exitCode);
 });
 
-const printReport = function (report) {
+const printReport = (report) => {
   for (const [filename, info] of report) {
     log.error(format(`\nFile: %s`, filename).red.underline);
 
@@ -95,10 +95,10 @@ const printReport = function (report) {
       for (const err of line) {
         let type = err.type;
 
-        const warn = type.toLowerCase() === types.WARNING;
-        type = warn ? type.red : type.green;
+        const isWarning = type.toLowerCase() === types.WARNING;
+        type = isWarning ? type.red : type.yellow;
 
-        if (warn) {
+        if (isWarning) {
           exitCode = 1;
         }
 
@@ -106,7 +106,6 @@ const printReport = function (report) {
       }
     }
   }
-
 };
 
 const validate = (filePath) => {
