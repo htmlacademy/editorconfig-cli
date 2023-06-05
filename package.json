@@ -7,10 +7,16 @@
   "bin": {
     "editorconfig-cli": "./index.js"
   },
+  "files": [
+    "./index.js"
+  ],
   "scripts": {
     "lint": "eslint index.js",
     "test": "node ./index.js",
-    "pretest": "npm run lint"
+    "pretest": "npm run lint",
+		"preversion": "npm run lint",
+		"postversion": "npm publish",
+		"postpublish": "git push origin --all; git push origin --tags"
   },
   "repository": {
     "type": "git",
