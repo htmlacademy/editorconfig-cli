@@ -40,12 +40,12 @@
   "dependencies": {
     "colors": "1.4.0",
     "commander": "10.0.1",
-    "glob": "10.2.2",
-    "lintspaces": "0.10.3"
+    "glob": "10.2.6",
+    "lintspaces": "0.10.4"
   },
   "devDependencies": {
-    "eslint": "8.39.0",
-    "eslint-config-htmlacademy": "9.0.0"
+    "eslint": "8.42.0",
+    "eslint-config-htmlacademy": "9.1.1"
   },
   "editorconfig-cli": [
     "*.html",
