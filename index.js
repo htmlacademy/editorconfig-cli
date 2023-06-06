@@ -9,9 +9,7 @@ import {glob} from "glob";
 import "colors";
 
 const VERBOSE_KEYS = [`-v`, `--verbose`];
-const VERBOSE = !!(process.argv.find((element) => {
-  return VERBOSE_KEYS.indexOf(element) >= 0;
-}));
+const VERBOSE = process.argv.some((element) => VERBOSE_KEYS.includes(element));
 const DEFAULT_EDITORCONFIG_NAME = `.editorconfig`;
 const JSON_CONFIG_PROPERTY_NAME = `editorconfig-cli`;
 const DEFAULT_JSON_FILENAME = `package.json`;
@@ -19,26 +17,26 @@ const DEFAULT_JSON_FILENAME = `package.json`;
 
 // Iterate over object props
 Object.prototype[Symbol.iterator] = function* () {
-  for (const key of Object.keys(this)) {
-    yield ([key, this[key]]);
+  for (const [key, value] of Object.entries(this)) {
+    yield [key, value];
   }
 };
 
 const log = {
-  'fatal': (message) => {
+  fatal(message) {
     console.log(message.red);
     process.exit(1);
   },
-  'info': console.log,
-  'error': console.warn,
-  'debug': (message) => {
+  info: console.log,
+  error: console.warn,
+  debug: (message) => {
     if (VERBOSE) {
       console.log(message);
     }
   }
 };
 
-const resolve = function (filename) {
+const resolve = (filename) => {
   const resolved = pathResolve(filename);
   return existsSync(resolved) ? resolved : null;
 };
@@ -46,11 +44,12 @@ const resolve = function (filename) {
 const checkEditorConfig = function (filename) {
   const filePath = resolve(filename);
 
-  log.info(`Using \'.editorconfig\' from: "${filePath}"`);
-
   if (!filePath) {
     log.fatal(`Error: Specified .editorconfig "${filename}" doesn\'t exist`);
+    return null;
   }
+
+  log.info(`Using \'.editorconfig\' from: "${filePath}"`);
 
   // BC! .editorconfig lib inside is looking for all possible paths relatively
   // So there is no way to pass absolute path
@@ -72,11 +71,12 @@ program
   .option(VERBOSE_KEYS.join(`, `), `verbose output`)
   .parse(process.argv);
 
+const opts = program.opts();
 const settings = {
-  editorconfig: program.editorconfig || checkEditorConfig(DEFAULT_EDITORCONFIG_NAME),
-  ignores: program.ignores,
-  json: program.json || DEFAULT_JSON_FILENAME,
-  exclude: program.exclude || []
+  editorconfig: opts.editorconfig || checkEditorConfig(DEFAULT_EDITORCONFIG_NAME),
+  ignores: opts.ignores,
+  json: opts.json || DEFAULT_JSON_FILENAME,
+  exclude: opts.exclude || []
 };
 
 log.debug(`Using settings: ${inspect(settings, {depth: 2})}`);
@@ -88,26 +88,25 @@ process.on(`beforeExit`, () => {
   process.exit(exitCode);
 });
 
-const printReport = function (report) {
+const printReport = (report) => {
   for (const [filename, info] of report) {
     log.error(format(`\nFile: %s`, filename).red.underline);
 
     for (const [, line] of info) {
       for (const err of line) {
-        let type = err.type;
+        const type = err.type;
 
-        const warn = type.toLowerCase() === types.WARNING;
-        type = warn ? type.red : type.green;
+        const isWarning = err.type.toLowerCase() === types.WARNING;
+        const typeColor = isWarning ? type.red : type.yellow;
 
-        if (warn) {
+        if (isWarning) {
           exitCode = 1;
         }
 
-        log.error(format(`Line: %s %s [%s]`, err.line, err.message, type));
+        log.error(format(`Line: %s %s [%s]`, err.line, err.message, typeColor));
       }
     }
   }
-
 };
 
 const validate = (filePath) => {
@@ -127,11 +126,9 @@ const validate = (filePath) => {
   });
 };
 
-const excludes = settings.exclude.map((regexp) => {
-  return new RegExp(regexp);
-});
+const excludes = settings.exclude.map((regexp) => new RegExp(regexp));
 
-const onFile = function (file) {
+const onFile = (file) => {
   const myPath = file;
 
   const matches = excludes.some((exclude) => {
