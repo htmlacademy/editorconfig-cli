@@ -94,16 +94,16 @@ const printReport = (report) => {
 
     for (const [, line] of info) {
       for (const err of line) {
-        let type = err.type;
+        const type = err.type;
 
-        const isWarning = type.toLowerCase() === types.WARNING;
-        type = isWarning ? type.red : type.yellow;
+        const isWarning = err.type.toLowerCase() === types.WARNING;
+        const typeColor = isWarning ? type.red : type.yellow;
 
         if (isWarning) {
           exitCode = 1;
         }
 
-        log.error(format(`Line: %s %s [%s]`, err.line, err.message, type));
+        log.error(format(`Line: %s %s [%s]`, err.line, err.message, typeColor));
       }
     }
   }
