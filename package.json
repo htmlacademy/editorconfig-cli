@@ -40,21 +40,11 @@
   "dependencies": {
     "colors": "1.4.0",
     "commander": "10.0.1",
-    "glob": "10.2.6",
+    "globby": "^13.1.4",
     "lintspaces": "0.10.4"
   },
   "devDependencies": {
     "eslint": "8.42.0",
     "eslint-config-htmlacademy": "9.1.1"
-  },
-  "editorconfig-cli": [
-    "*.html",
-    "*.json",
-    "img/**/*.svg",
-    "js/**/*.js",
-    "test/**/*.*",
-    "less/**/*.less",
-    "sass/**/*.{sass,scss}",
-    "postcss/**/*.{css,pcss}"
-  ]
+  }
 }
