@@ -5,7 +5,7 @@ import {inspect, format} from "node:util";
 import Validator from "lintspaces";
 import * as types from "lintspaces/src/constants/types.js";
 import {program} from "commander";
-import {glob} from "glob";
+import {globby} from "globby";
 import "colors";
 
 const VERBOSE_KEYS = [`-v`, `--verbose`];
@@ -145,7 +145,7 @@ const processInput = function (args) {
       validate(resolved);
     } else {
       log.debug(`Calling GLOB: ${it}`);
-      glob(it, {gitignore: true})
+      globby(it, {gitignore: true})
         .then(
             (files) => {
               files.forEach(onFile);

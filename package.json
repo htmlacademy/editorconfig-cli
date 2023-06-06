@@ -40,7 +40,7 @@
   "dependencies": {
     "colors": "1.4.0",
     "commander": "10.0.1",
-    "glob": "10.2.6",
+    "globby": "^13.1.4",
     "lintspaces": "0.10.4"
   },
   "devDependencies": {
