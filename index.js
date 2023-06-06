@@ -57,27 +57,18 @@ const checkEditorConfig = function (filename) {
   return filename;
 };
 
-const collect = (value, memo) => {
-  memo.push(value);
-  return memo;
-};
+const collect = (value, previous) => previous.concat([value]);
 
 program
   .usage(`[options] \<file ... or 'glob'\>`)
-  .option(`-e, --editorconfig <file>`, `pass .editorconfig (by default it will look in './.editorconfig').\n!Warning! absolute paths are not supported or will break on Windows OS`, checkEditorConfig)
-  .option(`-i, --ignores <profile-name or regexp>`, `ignoring profiles. Like ('js-comments'|'java-comments'|'xml-comments'|'html-comments'|...). Defaults are 'js-comments'|'html-comments'`, [`js-comments`, `html-comments`])
-  .option(`-j, --json <file>`, `load GLOBs from JSON file. If no input passed, then it tries to find array in package.json`)
-  .option(`-x, --exclude <regexp>`, `exclude files by pattern. Default 'normalize.*'`, collect, [`/normalize.*`])
+  .option(`-e, --editorconfig <file>`, `pass configuration file.\n!Warning! absolute paths are not supported or will break on Windows OS.`, checkEditorConfig, checkEditorConfig(DEFAULT_EDITORCONFIG_NAME))
+  .option(`-i, --ignores <profile-name or regexp...>`, `ignoring profiles. Like ('js-comments'|'java-comments'|'xml-comments'|'html-comments'|...).`, collect, [`js-comments`, `html-comments`])
+  .option(`-j, --json <file>`, `load GLOBs from JSON file. If no input passed, then it tries to find array in package.json`, DEFAULT_JSON_FILENAME)
+  .option(`-x, --exclude <regexp...>`, `exclude files by patterns.`, collect, [`/normalize*`])
   .option(VERBOSE_KEYS.join(`, `), `verbose output`)
-  .parse(process.argv);
+  .parse();
 
-const opts = program.opts();
-const settings = {
-  editorconfig: opts.editorconfig || checkEditorConfig(DEFAULT_EDITORCONFIG_NAME),
-  ignores: opts.ignores,
-  json: opts.json || DEFAULT_JSON_FILENAME,
-  exclude: opts.exclude || []
-};
+const settings = program.opts();
 
 log.debug(`Using settings: ${inspect(settings, {depth: 2})}`);
 log.debug(`Passed args: '${program.args}'`);
