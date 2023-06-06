@@ -9,42 +9,56 @@ Supports [GLOB format](https://github.com/isaacs/node-glob).
 
 ## Install
 
+Globaly:
+
 ```shell
-npm install -g @htmlacademy/editorconfig-cli
+npm i -g @htmlacademy/editorconfig-cli
+```
+
+Or localy in the project:
+
+```shell
+npm i -D @htmlacademy/editorconfig-cli
 ```
 
 ## Help
 
 ```shell
-$ editorconfig-cli --help
+$ npx editorconfig-cli --help
 
   Usage: editorconfig-cli [options] <file ... or 'glob'>
 
   Options:
-
-    -h, --help                              output usage information
-    -e, --editorconfig <file>               pass .editorconfig (by default it will look in './.editorconfig')
-    -i, --ignores <profile-name or regexp>  ignoring profiles. Like ('js-comments'|'java-comments'|'xml-comments'|'html-comments'|...). Defaults are 'js-comments'|'html-comments'
-    -j, --json <file>                       load GLOBs from JSON file. If no input passed, then it tries to find array in package.json
-    -x, --exclude <regexp>                  exclude files by pattern. Default 'normalize.*'
-    -v, --verbose                           verbose output
+  -e, --editorconfig <file>                   pass configuration file.
+                                              !Warning! absolute paths are not supported or will break on Windows OS. (default: ".editorconfig")
+  -i, --ignores <profile-name or regexp...>   ignoring profiles. Like ('js-comments'|'java-comments'|'xml-comments'|'html-comments'|...). (default: ["js-comments","html-comments"])
+  -j, --json <file>                           load GLOBs from JSON file. If no input passed, then it tries to find array in package.json (default: "package.json")
+  -x, --exclude <regexp...>                   exclude files by patterns. (default: [".*.min..*"])
+  -v, --verbose                               verbose output
+  -h, --help                                  display help for command
 ```
 
 ## Example Commands
 
-Check all JavaScript files recursively, using `./.editorconfig` as settings:
+Check all files in the project except those with the `.min.` suffix and listed in `./.gitignore`, using `./.editorconfig` as the settings:
+
+```shell
+editorconfig-cli
+```
+
+The same as above, but only JavaScript files:
 
 ```shell
 editorconfig-cli **/*.js
 ```
 
-The same as above but with [GLOB format](https://github.com/isaacs/node-glob):
+The same as above, but with [GLOB format](https://github.com/isaacs/node-glob):
 
 ```shell
 editorconfig-cli '**/*.js'
 ```
 
-Load GLOBs from `package.json` and exclude `normalize.*` by default:
+Load GLOBs from `package.json`:
 
 ```shell
 editorconfig-cli
@@ -84,7 +98,7 @@ Using built in ignores can be done like so:
 editorconfig-cli -i 'js-comments' -i 'c-comments'
 ```
 
-If parameters are omitted, then `js-comments` and `html-comments` are used. 
+If parameters are omitted, then `js-comments` and `html-comments` are used.
 
 [vulnerabilities-url]: https://snyk.io/test/github/htmlacademy/editorconfig-cli
 [vulnerabilities-image]: https://snyk.io/test/github/htmlacademy/editorconfig-cli/badge.svg
