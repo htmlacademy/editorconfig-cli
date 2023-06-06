@@ -64,7 +64,7 @@ program
   .option(`-e, --editorconfig <file>`, `pass configuration file.\n!Warning! absolute paths are not supported or will break on Windows OS.`, checkEditorConfig, checkEditorConfig(DEFAULT_EDITORCONFIG_NAME))
   .option(`-i, --ignores <profile-name or regexp...>`, `ignoring profiles. Like ('js-comments'|'java-comments'|'xml-comments'|'html-comments'|...).`, collect, [`js-comments`, `html-comments`])
   .option(`-j, --json <file>`, `load GLOBs from JSON file. If no input passed, then it tries to find array in package.json`, DEFAULT_JSON_FILENAME)
-  .option(`-x, --exclude <regexp...>`, `exclude files by patterns.`, collect, [`/normalize*`])
+  .option(`-x, --exclude <regexp...>`, `exclude files by patterns.`, collect, [`.*\.min\..*`])
   .option(VERBOSE_KEYS.join(`, `), `verbose output`)
   .parse();
 
