@@ -71,11 +71,12 @@ program
   .option(VERBOSE_KEYS.join(`, `), `verbose output`)
   .parse(process.argv);
 
+const opts = program.opts();
 const settings = {
-  editorconfig: program.editorconfig || checkEditorConfig(DEFAULT_EDITORCONFIG_NAME),
-  ignores: program.ignores,
-  json: program.json || DEFAULT_JSON_FILENAME,
-  exclude: program.exclude || []
+  editorconfig: opts.editorconfig || checkEditorConfig(DEFAULT_EDITORCONFIG_NAME),
+  ignores: opts.ignores,
+  json: opts.json || DEFAULT_JSON_FILENAME,
+  exclude: opts.exclude || []
 };
 
 log.debug(`Using settings: ${inspect(settings, {depth: 2})}`);
@@ -127,7 +128,7 @@ const validate = (filePath) => {
 
 const excludes = settings.exclude.map((regexp) => new RegExp(regexp));
 
-const onFile = function (file) {
+const onFile = (file) => {
   const myPath = file;
 
   const matches = excludes.some((exclude) => {
