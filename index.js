@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import {existsSync, lstat, readFile} from "node:fs";
 import {resolve as pathResolve} from "node:path";
 import {inspect, format} from "node:util";
