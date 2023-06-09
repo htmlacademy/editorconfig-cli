@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import {existsSync, lstat, readFile} from "node:fs";
 import {resolve as pathResolve} from "node:path";
 import {inspect, format} from "node:util";
@@ -13,7 +15,7 @@ const VERBOSE = process.argv.some((element) => VERBOSE_KEYS.includes(element));
 const DEFAULT_EDITORCONFIG_NAME = `.editorconfig`;
 const JSON_CONFIG_PROPERTY_NAME = `editorconfig-cli`;
 const DEFAULT_JSON_FILENAME = `package.json`;
-
+const GLOB_EXCLUDING_BINARIES = `!**.{ico,gif,png,jpg,jpeg,webp,avif,pdf,woff,woff2}`;
 
 // Iterate over object props
 Object.prototype[Symbol.iterator] = function* () {
@@ -145,7 +147,8 @@ const processInput = function (args) {
       validate(resolved);
     } else {
       log.debug(`Calling GLOB: ${it}`);
-      globby(it, {gitignore: true})
+      let globs = [it, GLOB_EXCLUDING_BINARIES];
+      globby(globs, {gitignore: true})
         .then(
             (files) => {
               files.forEach(onFile);
@@ -171,7 +174,7 @@ if (args.length === 0) {
       const patterns = JSON.parse(data)[JSON_CONFIG_PROPERTY_NAME];
       if (!patterns || patterns.length === 0) {
         log.info(`GLOGs not found. Checking all unexcluded files...`);
-        processInput([`**`]);
+        processInput([`**`, `.**`]);
       } else {
         log.info(`Loaded GLOBs from '${found}': ${patterns}`);
         processInput(patterns);
