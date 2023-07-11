@@ -40,12 +40,12 @@
   },
   "dependencies": {
     "colors": "1.4.0",
-    "commander": "10.0.1",
-    "globby": "13.1.4",
+    "commander": "11.0.0",
+    "globby": "13.2.2",
     "lintspaces": "0.10.4"
   },
   "devDependencies": {
-    "eslint": "8.42.0",
+    "eslint": "8.44.0",
     "eslint-config-htmlacademy": "9.1.1"
   }
 }
