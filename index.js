@@ -8,7 +8,7 @@ import Validator from "lintspaces";
 import * as types from "lintspaces/src/constants/types.js";
 import {program} from "commander";
 import {globby} from "globby";
-import "colors";
+import picocolors from "picocolors";
 
 const VERBOSE_KEYS = [`-v`, `--verbose`];
 const VERBOSE = process.argv.some((element) => VERBOSE_KEYS.includes(element));
@@ -26,7 +26,7 @@ Object.prototype[Symbol.iterator] = function* () {
 
 const log = {
   fatal(message) {
-    console.log(message.red);
+    console.log(picocolors.red(message));
     process.exit(1);
   },
   info: console.log,
@@ -83,14 +83,14 @@ process.on(`beforeExit`, () => {
 
 const printReport = (report) => {
   for (const [filename, info] of report) {
-    log.error(format(`\nFile: %s`, filename).red.underline);
+    log.error(picocolors.underline(picocolors.red(`\nFile: ${filename}`)));
 
     for (const [, line] of info) {
       for (const err of line) {
         const type = err.type;
 
         const isWarning = err.type.toLowerCase() === types.WARNING;
-        const typeColor = isWarning ? type.red : type.yellow;
+        const typeColor = isWarning ? picocolors.red(type) : picocolors.yellow(type);
 
         if (isWarning) {
           exitCode = 1;
@@ -129,7 +129,7 @@ const onFile = (file) => {
 
     const excluded = exclude.test(myPath);
     if (excluded) {
-      log.info(`File: ${myPath} [${`excluded`.green}]`);
+      log.info(`File: ${myPath} [${picocolors.green(`excluded`)}]`);
     }
 
     return excluded;
@@ -180,7 +180,7 @@ if (args.length === 0) {
         processInput(patterns);
       }
     } catch (e) {
-      log.error(`Failed to read JSON file: ${e}`.red);
+      log.error(picocolors.red(`Failed to read JSON file: ${e}`));
     }
   });
 } else {
