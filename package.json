@@ -39,10 +39,10 @@
     "node": ">=16"
   },
   "dependencies": {
-    "colors": "1.4.0",
     "commander": "11.0.0",
     "globby": "13.2.2",
-    "lintspaces": "0.10.4"
+    "lintspaces": "0.10.4",
+    "picocolors": "1.0.0"
   },
   "devDependencies": {
     "eslint": "8.44.0",
