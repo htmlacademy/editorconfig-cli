@@ -1,37 +1,40 @@
 # Changelog
 
+## 2.0.5
+- Replaced `colors` with `picocolors`
+
 ## 2.0.4
-- Поправили регулярное выражение для `*.min.*`-файлов
+- Fixed regular expression for `*.min.*`-files
 
 ## 2.0.3
-- Восстановили работу CLI
-- Добавили алиас ec
-- Исключили бинарные форматы
+- Restored CLI functionality
+- Added ec alias
+- Eliminated binary formats
 
 ## 2.0.2
-- Освежили код
-  - перевели функции на стрелочные
-  - отказались от двойного инвертирования булева значения
-  - осовременили использование объектов
-- Убрали репорты если они не нужны
-- Починили работу флагов
-- Переделали работу с опциями
-- Перешли с пакета `glob` на `globby`
-- Удалили дефолтные пути для файлов
-- Отказались от нормалайза
-- Добавили `.min.*` файлы
+- Freshened up the code
+  - switched functions to arrow keys
+  - abandoned double inversion of the boolean value
+  - updated the use of objects
+- Removed reports if they are not needed
+- Fixed the work of flags
+- Revamped the work with options
+- Changed from the `glob` package to `globby`.
+- Removed default paths for files
+- Gave up normalize
+- Added `.min.*` files
 
 ## 2.0.1
-- Обновили зависимости до самых свежайших
+- Updated the dependencies to the latest
 
 ## 2.0.0
-- Обновили зависимости
-- Сконвертировали в ESM
-- Добавили vulnerability count badge
-- Реконфигурировали линтеры
-- Улучшили README.md
+- Updated dependencies
+- Converted to ESM
+- Added vulnerability count badge
+- Reconfigured linters
+- Improved README.md
 
 # 1.0.0
-- Добавили уведомления об ошибках
-- Перешли на `const`
-- Поправили работу под Windows
+- Added error notifications
+- Changed to `const
+- Fixed work under Windows
