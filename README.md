@@ -33,7 +33,7 @@ $ npx editorconfig-cli --help
                                               !Warning! absolute paths are not supported or will break on Windows OS. (default: ".editorconfig")
   -i, --ignores <profile-name or regexp...>   ignoring profiles. Like ('js-comments'|'java-comments'|'xml-comments'|'html-comments'|...). (default: ["js-comments","html-comments"])
   -j, --json <file>                           load GLOBs from JSON file. If no input passed, then it tries to find array in package.json (default: "package.json")
-  -x, --exclude <regexp...>                   exclude files by patterns. (default: [".*.min..*"])
+  -x, --exclude <regexp...>                   exclude files by patterns. (default: [`.*\\.min\\..*`])
   -v, --verbose                               verbose output
   -h, --help                                  display help for command
 ```
