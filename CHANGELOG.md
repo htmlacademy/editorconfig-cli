@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.0.7
+- Fix typo: `Glogs` -> `Globs`
+
 ## 2.0.6
 - Update dependencies
 
