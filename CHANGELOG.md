@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.0.6
+- Update dependencies
+
 ## 2.0.5
 - Replaced `colors` with `picocolors`
 
