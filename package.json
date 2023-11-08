@@ -41,11 +41,11 @@
   "dependencies": {
     "commander": "11.0.0",
     "globby": "13.2.2",
-    "lintspaces": "0.10.4",
+    "lintspaces": "0.11.0",
     "picocolors": "1.0.0"
   },
   "devDependencies": {
-    "eslint": "8.44.0",
-    "eslint-config-htmlacademy": "9.1.1"
+    "eslint": "8.53.0",
+    "eslint-config-htmlacademy": "10.0.1"
   }
 }
