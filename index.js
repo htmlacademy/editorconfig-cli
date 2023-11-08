@@ -173,7 +173,7 @@ if (args.length === 0) {
 
       const patterns = JSON.parse(data)[JSON_CONFIG_PROPERTY_NAME];
       if (!patterns || patterns.length === 0) {
-        log.info(`GLOGs not found. Checking all unexcluded files...`);
+        log.info(`GLOBs not found. Checking all unexcluded files...`);
         processInput([`**`, `.**`]);
       } else {
         log.info(`Loaded GLOBs from '${found}': ${patterns}`);
