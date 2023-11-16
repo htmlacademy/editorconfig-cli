@@ -17,13 +17,6 @@ const JSON_CONFIG_PROPERTY_NAME = `editorconfig-cli`;
 const DEFAULT_JSON_FILENAME = `package.json`;
 const GLOB_EXCLUDING_BINARIES = `!**.{ico,gif,png,jpg,jpeg,webp,avif,pdf,woff,woff2}`;
 
-// Iterate over object props
-Object.prototype[Symbol.iterator] = function* () {
-  for (const [key, value] of Object.entries(this)) {
-    yield [key, value];
-  }
-};
-
 const log = {
   fatal(message) {
     console.log(picocolors.red(message));
@@ -82,10 +75,10 @@ process.on(`beforeExit`, () => {
 });
 
 const printReport = (report) => {
-  for (const [filename, info] of report) {
+  for (const [filename, info] of Object.entries(report)) {
     log.error(picocolors.underline(picocolors.red(`\nFile: ${filename}`)));
 
-    for (const [, line] of info) {
+    for (const [, line] of Object.entries(info)) {
       for (const err of line) {
         const type = err.type;
 
