@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.8
+- Replaced the hack with `Object.prototype[Symbol.iterator]`
+- Update dependencies
+
 ## 2.0.7
 - Fix typo: `Glogs` -> `Globs`
 
