@@ -45,7 +45,7 @@
     "picocolors": "1.0.0"
   },
   "devDependencies": {
-    "eslint": "8.53.0",
+    "eslint": "^8.54.0",
     "eslint-config-htmlacademy": "10.0.1"
   }
 }
