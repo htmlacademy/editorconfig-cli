@@ -82,7 +82,8 @@ const printReport = (report) => {
       for (const err of line) {
         const type = err.type;
 
-        const isWarning = type.toLowerCase() === types.WARNING;
+        // Change the harcoded "warning" to types.WARNING when import has been fixed
+        const isWarning = type.toLowerCase() === "warning";
         const typeColor = isWarning ? picocolors.red(type) : picocolors.yellow(type);
 
         if (isWarning) {
