@@ -1,7 +1,7 @@
 # Changelog
 
 ## 2.0.9
-Corrected an issue where warnings were not properly identified and displayed in yellow instead of the expected red. This was due to a broken import of the "types". Thanks to [tupaschoal](https://github.com/tupaschoal)
+Corrected an issue where warnings were not properly identified and displayed in yellow instead of the expected red. This was due to a broken import of the "types". Thanks to [Tulio Leao](https://github.com/tupaschoal)
 
 ## 2.0.8
 - Replaced the hack with `Object.prototype[Symbol.iterator]`
