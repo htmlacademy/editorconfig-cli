@@ -5,7 +5,7 @@ import {resolve as pathResolve} from "node:path";
 import {inspect, format} from "node:util";
 
 import Validator from "lintspaces";
-import * as types from "lintspaces/src/constants/types.js";
+import {default as types} from "lintspaces/src/constants/types.js";
 import {program} from "commander";
 import {globby} from "globby";
 import picocolors from "picocolors";
@@ -82,7 +82,7 @@ const printReport = (report) => {
       for (const err of line) {
         const type = err.type;
 
-        const isWarning = err.type.toLowerCase() === types.WARNING;
+        const isWarning = type.toLowerCase() === types.WARNING;
         const typeColor = isWarning ? picocolors.red(type) : picocolors.yellow(type);
 
         if (isWarning) {
