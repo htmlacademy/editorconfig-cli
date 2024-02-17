@@ -82,7 +82,7 @@ const printReport = (report) => {
       for (const err of line) {
         const type = err.type;
 
-        const isWarning = err.type.toLowerCase() === types.WARNING;
+        const isWarning = type.toLowerCase() === types.WARNING;
         const typeColor = isWarning ? picocolors.red(type) : picocolors.yellow(type);
 
         if (isWarning) {
