@@ -13,8 +13,8 @@
   ],
   "scripts": {
     "lint": "eslint index.js",
-    "test": "node ./index.js",
-    "pretest": "npm run lint",
+    "lint:fixtures": "node ./index.js",
+    "test": "node --test tests/",
     "preversion": "npm run lint",
     "postversion": "npm publish",
     "postpublish": "git push origin --all && git push origin --tags"
