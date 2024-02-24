@@ -1,6 +1,6 @@
 {
   "name": "@htmlacademy/editorconfig-cli",
-  "version": "2.0.9",
+  "version": "2.0.10",
   "description": "Command line interface for project files with .editorconfig",
   "type": "module",
   "exports": "./index.js",
@@ -40,7 +40,7 @@
   },
   "dependencies": {
     "commander": "11.1.0",
-    "globby": "14.0.0",
+    "globby": "13.2.2",
     "lintspaces": "0.11.0",
     "picocolors": "1.0.0"
   },
