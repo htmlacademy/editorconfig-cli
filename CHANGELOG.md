@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.0.0
+Almost all the packages that `editorconfig-cli` depends on now work starting from node.js version 18.
+
+## 2.0.10
+This is the latest version of the package in version two. The second version runs stably on node.js 16. To keep node.js 16 running, `globby` was downgraded to 13.2.2, since `globby: 14` runs on node.js 18+.
+
 ## 2.0.9
 Corrected an issue where warnings were not properly identified and displayed in yellow instead of the expected red. This was due to a broken import of the "types". Thanks to [Tulio Leao](https://github.com/tupaschoal)
 

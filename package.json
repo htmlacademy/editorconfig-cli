@@ -1,6 +1,6 @@
 {
   "name": "@htmlacademy/editorconfig-cli",
-  "version": "2.0.9",
+  "version": "3.0.0",
   "description": "Command line interface for project files with .editorconfig",
   "type": "module",
   "exports": "./index.js",
@@ -36,16 +36,16 @@
   },
   "homepage": "https://github.com/htmlacademy/editorconfig-cli#readme",
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   },
   "dependencies": {
-    "commander": "11.1.0",
-    "globby": "14.0.0",
+    "commander": "12.0.0",
+    "globby": "14.0.1",
     "lintspaces": "0.11.0",
     "picocolors": "1.0.0"
   },
   "devDependencies": {
-    "eslint": "8.56.0",
+    "eslint": "8.57.0",
     "eslint-config-htmlacademy": "10.0.1"
   }
 }
